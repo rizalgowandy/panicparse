@@ -46,13 +46,13 @@ func writeToHTML(html string, buckets []*stack.Bucket, needsEnv bool) error {
 
 func funcClass(line *stack.Call) template.HTML {
 	if line.IsStdlib {
-		if line.Func.IsExported() {
+		if line.Func.IsExported {
 			return "FuncStdLibExported"
 		}
-		return "FuncStdLib"
-	} else if line.IsPkgMain() {
+		return "FunctionStdLib"
+	} else if line.IsPkgMain {
 		return "FuncMain"
-	} else if line.Func.IsExported() {
+	} else if line.Func.IsExported {
 		return "FuncOtherExported"
 	}
 	return "FuncOther"

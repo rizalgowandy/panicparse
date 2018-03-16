@@ -41,14 +41,14 @@ func CalcLengths(buckets []*stack.Bucket, fullPath bool) (int, int) {
 		for _, line := range bucket.Signature.Stack.Calls {
 			l := 0
 			if fullPath {
-				l = len(line.FullSrcLine())
+				l = len(fmt.Sprintf("%s:%d", line.SrcPath, line.Line))
 			} else {
-				l = len(line.SrcLine())
+				l = len(fmt.Sprintf("%s:%d", line.SrcName, line.Line))
 			}
 			if l > srcLen {
 				srcLen = l
 			}
-			l = len(line.Func.PkgName())
+			l = len(line.Func.PkgName)
 			if l > pkgLen {
 				pkgLen = l
 			}
@@ -61,13 +61,13 @@ func CalcLengths(buckets []*stack.Bucket, fullPath bool) (int, int) {
 // the type of package the function is in.
 func (p *Palette) functionColor(line *stack.Call) string {
 	if line.IsStdlib {
-		if line.Func.IsExported() {
+		if line.Func.IsExported {
 			return p.FuncStdLibExported
 		}
 		return p.FuncStdLib
-	} else if line.IsPkgMain() {
+	} else if line.IsPkgMain {
 		return p.FuncMain
-	} else if line.Func.IsExported() {
+	} else if line.Func.IsExported {
 		return p.FuncOtherExported
 	}
 	return p.FuncOther
@@ -104,15 +104,15 @@ func (p *Palette) BucketHeader(bucket *stack.Bucket, fullPath, multipleBuckets b
 func (p *Palette) callLine(line *stack.Call, srcLen, pkgLen int, fullPath bool) string {
 	src := ""
 	if fullPath {
-		src = line.FullSrcLine()
+		src = fmt.Sprintf("%s:%d", line.SrcPath, line.Line)
 	} else {
-		src = line.SrcLine()
+		src = fmt.Sprintf("%s:%d", line.SrcName, line.Line)
 	}
 	return fmt.Sprintf(
 		"    %s%-*s %s%-*s %s%s%s(%s)%s",
-		p.Package, pkgLen, line.Func.PkgName(),
+		p.Package, pkgLen, line.Func.PkgName,
 		p.SrcFile, srcLen, src,
-		p.functionColor(line), line.Func.Name(),
+		p.functionColor(line), line.Func.Name,
 		p.Arguments, &line.Args,
 		p.EOLReset)
 }

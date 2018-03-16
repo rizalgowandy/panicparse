@@ -41,10 +41,10 @@ func Example() {
 	pkgLen := 0
 	for _, bucket := range buckets {
 		for _, line := range bucket.Signature.Stack.Calls {
-			if l := len(line.SrcLine()); l > srcLen {
+			if l := len(fmt.Sprintf("%s:%d", line.SrcName, line.Line)); l > srcLen {
 				srcLen = l
 			}
-			if l := len(line.Func.PkgName()); l > pkgLen {
+			if l := len(line.Func.PkgName); l > pkgLen {
 				pkgLen = l
 			}
 		}
@@ -68,8 +68,8 @@ func Example() {
 		for _, line := range bucket.Stack.Calls {
 			fmt.Printf(
 				"    %-*s %-*s %s(%s)\n",
-				pkgLen, line.Func.PkgName(), srcLen, line.SrcLine(),
-				line.Func.Name(), &line.Args)
+				pkgLen, line.Func.PkgName, srcLen, fmt.Sprintf("%s:%d", line.SrcName, line.Line),
+				line.Func.Name, &line.Args)
 		}
 		if bucket.Stack.Elided {
 			io.WriteString(os.Stdout, "    (...)\n")
