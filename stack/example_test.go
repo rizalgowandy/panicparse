@@ -8,7 +8,9 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
+	"runtime"
 
 	"github.com/maruel/panicparse/stack"
 )
@@ -82,4 +84,11 @@ func Example() {
 	//          panic.go:464 panic(0, 0)
 	//     main main.go:45   crash2(0x7fe50b49d028, 0xc82000a1e0)
 	//     main main.go:50   main()
+}
+
+func ExampleSnapshot() {
+	b := make([]byte, 1024*1024)
+	_ = runtime.Stack(b, true)
+	c, err := ParseDump(bytes.NewReader(s), ioutil.Discard, false)
+	c.Print()
 }
